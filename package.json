@@ -1,0 +1,28 @@
+{
+  "name": "dashiumcompiler",
+  "version": "1.0.0",
+  "description": "Compilateur pour Dashium",
+  "main": "main.js",
+  "scripts": {
+    "test": "node main.js",
+    "build": "node main.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Dashium/DashiumCompiler.git"
+  },
+  "keywords": [
+    "compilateur",
+    "dashium"
+  ],
+  "author": "Tai Tetsuyuki",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Dashium/DashiumCompiler/issues"
+  },
+  "homepage": "https://github.com/Dashium/DashiumCompiler#readme",
+  "dependencies": {
+    "child_process": "^1.0.2",
+    "rimraf": "^3.0.2"
+  }
+}
