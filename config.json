@@ -1,0 +1,39 @@
+{
+    "create_dir": [
+        "build",
+        "build/webserver",
+        "build/dashboard",
+
+        "dist"
+    ],
+    "download": {
+        "0": [
+            "https://github.com/Dashium/DashiumWebServer",
+            "build/webserver"
+        ],
+        "1": [
+            "https://github.com/Dashium/DashiumDashboard",
+            "build/dashboard"
+        ],
+        "2": [
+            "https://github.com/Dashium/Dashium",
+            "dist"
+        ]
+    },
+    "clean_files": [
+        ".gitignore",
+        "LICENSE",
+        "README.md"
+    ],
+    "order": {
+        "mkdir": "create_dir",
+        "clone": "download",
+        "clean": [
+            "clean_files",
+            "build"
+        ],
+        "move": {
+            "build/webserver": "dist"
+        }
+    }
+}

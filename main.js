@@ -2,12 +2,13 @@ const child_process = require('child_process');
 const fs = require('fs');
 const rimraf = require('rimraf');
 
+var config = require('./config.json');
+
 var dirs = [
     "build",
     "build/webserver",
     "build/dashboard",
-
-    'dist'
+    "dist"
 ];
 var cleanFiles = [
     ".gitignore",
@@ -20,6 +21,11 @@ init();
 function init(){
     reset();
 
+    for(i=0;i<Object.keys(config.order);){
+        console.log(config.order[i]);
+        console.log('cc');
+        i++
+    }
     for(i=0;i<dirs.length;i++){
         create_dir(dirs[i]);
     }
