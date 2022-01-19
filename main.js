@@ -1,95 +1,185 @@
 const child_process = require('child_process');
 const fs = require('fs');
+const path = require('path');
 const rimraf = require('rimraf');
 
 var config = require('./config.json');
-
-var dirs = [
-    "build",
-    "build/webserver",
-    "build/dashboard",
-    "dist"
-];
-var cleanFiles = [
-    ".gitignore",
-    "LICENSE",
-    "README.md"
-];
-
-init();
-
-function init(){
-    reset();
-
-    for(i=0;i<Object.keys(config.order);){
-        console.log(config.order[i]);
-        console.log('cc');
-        i++
-    }
-    for(i=0;i<dirs.length;i++){
-        create_dir(dirs[i]);
-    }
-
-    // BUILD
-    exec('git clone https://github.com/Dashium/DashiumWebServer build/webserver', build());
-    exec('git clone https://github.com/Dashium/DashiumDashboard build/dashboard', build());
-
-    //DIST
-    exec('git clone https://github.com/Dashium/Dashium dist', dist());
-};
 
 function build(){
     clean('build');
 }
 
-function dist(){
-    move('build/webserver', 'dist/webserver')
+function clean(dir, cleanFiles){
+    if(dir == null || cleanFiles == null){
+        logger('err', `No argument found on clean function !`);
+    }
+    for(c=0;c<cleanFiles.length;c++){
+        rimraf.sync(`${dir}/${cleanFiles[c]}`);
+        logger('info', `clean ${cleanFiles[c]}`);
+    }
+}
+
+function clone(repo, dest){
+    if(repo == null || dest == null){
+        logger('err', `No argument found on clone function !`);
+        return false;
+    }
+    try {
+        exec(`git clone ${repo} ${dest}`);
+    } catch (error) {
+        logger('err', `Fail to clone '${repo}' repo`);
+    }
+}
+
+function copyFileSync(source, target){
+    var targetFile = target;
+    if(fs.existsSync(target)){
+        if(fs.lstatSync(target).isDirectory()){
+            targetFile = path.join(target, path.basename(source));
+        }
+    }
+    fs.writeFileSync(targetFile, fs.readFileSync(source));
+    logger('info', targetFile);
+}
+
+function copyFolderRecursiveSync(source, target){
+    var files = [];
+    var targetFolder = path.join(target, path.basename(source));
+    if(!fs.existsSync(targetFolder)) {
+        fs.mkdirSync(targetFolder);
+    }
+    if(fs.lstatSync(source).isDirectory()){
+        files = fs.readdirSync(source);
+        files.forEach(function(file){
+            var curSource = path.join(source, file);
+            if(fs.lstatSync(curSource).isDirectory()){
+                copyFolderRecursiveSync(curSource, targetFolder);
+            }
+            else{
+                copyFileSync(curSource, targetFolder);
+            }
+        });
+    }
 }
 
 function create_dir(dir){
-    if(fs.existsSync(dir) == false){
-        fs.mkdirSync(dir);
-        console.log(`LOG: create ${dir} dir`);
+    try {
+        if(fs.existsSync(dir) == false){
+            fs.mkdirSync(dir);
+            logger('info', `create '${dir}' dir`);
+        }
+    } catch (error) {
+        logger('err', `Fail to create '${dir}' dir`);
+    }
+}
+
+function create_dirs(dirs){
+    for(i=0;i<dirs.length;i++){
+        create_dir(dirs[i]);
+
+        if(i == dirs.length - 1){
+            return true;
+        }
+    }
+}
+
+async function exec(cmd){
+    child_process.exec(cmd, (err, stdout) => {
+        if(err == null){
+            if(cmd.indexOf('clone')){
+                logger('info', `repo clonned`);
+            }
+        }
+    });
+    sleep(7000);
+}
+
+function filter(key, value){
+    if(key == null || value == null){
+        logger('err', `No argument found on filter function !`);
+        return false;
+    }
+    switch(key){
+        case 'clone':
+            clone(value[0], value[1]);
+            break;
+        case 'function':
+            for(fi=0;fi < Object.keys(config[value]).length; fi++){
+                filter(config[value].type, config[value][fi]);
+            }
+            break;
+        case 'mkdir':
+            create_dirs(config[value]);
+            break;
+        case 'move':
+            move(value[0], value[1]);
+            break;
+        default:
+            logger('err', `Not found key: ${key}`);
+    }
+}
+
+function init(){
+    for(ini=0;ini<Object.keys(config.order).length;){
+        let key = Object.keys(config.order)[ini];
+        let value = config.order[key];
+
+        console.log(key, value);
+
+        if(key.indexOf('function') == 0){
+            key = "function";
+        }
+        
+        filter(key, value);
+
+        ini++;
+    }
+}
+
+function logger(lvl, content){
+    switch(lvl){
+        case 'err':
+            console.log(`ERROR: ${content}`);
+            break;
+        case 'info':
+            console.log(`LOG: ${content}`);
+            break;
+        default:
+            console.log(`LOG: ${content}`);
     }
 }
 
 function move(target, dest){
-    fs.copyFile(target, dest, () => {
-        console.log('LOG: moved');
-    })
+    copyFolderRecursiveSync(target, dest);
 }
 
-function clean(dir){
-    for(c=0;c<cleanFiles.length;c++){
-        rimraf.sync(`${dir}/${cleanFiles[c]}`);
-        console.log(`LOG: clean ${cleanFiles[c]}`);
-    }
+function remove(target){
+    rimraf.sync(target);
 }
 
-function reset(){
-    if(fs.existsSync('build') == true){
-        fs.rm('build', { recursive: true }, () => {
-            console.log(`LOG: reset`);
-        });
-    }
-    if(fs.existsSync('dist') == true){
-        fs.rm('dist', { recursive: true }, () => {
-            console.log(`LOG: reset`);
-        });
-    }
-}
+const reset = new Promise(function(resolve, reject){
+    try {
+        remove('build');
+        remove('dist');
+        remove('test');
 
-function exec(cmd, callback){
-    child_process.exec(cmd, (err, stdout) => {
-        if(err == null){
-            if(cmd.indexOf('clone')){
-                console.log(`LOG: repo clonned`);
-                setTimeout(() => {
-                    if(callback != null){
-                        callback();
-                    }
-                }, 5000);
-            }
-        }
-    });
+        setTimeout(() => {
+            resolve('reset');
+        }, 1000);
+    } catch (error) {
+        reject('No reset');
+    }
+});
+
+reset.then(function(value){
+    console.log(value);
+    init();
+});
+
+function sleep(milliseconds) {
+    const date = Date.now();
+    let currentDate = null;
+    do {
+      currentDate = Date.now();
+    } while (currentDate - date < milliseconds);
 }
