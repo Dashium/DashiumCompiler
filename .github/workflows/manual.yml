@@ -1,5 +1,5 @@
 on: workflow_dispatch
-name: Build Dashium
+name: Manual Build Dashium
 jobs:
   render:
     name: Build Dashium
