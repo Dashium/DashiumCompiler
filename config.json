@@ -16,16 +16,25 @@
         "LICENSE",
         "README.md"
     ],
-    "create_dir": [
-        "build",
-        "build/webserver",
-        "build/dashboard",
-
-        "test",
-        "test/dashium",
-        "test/public",
-        "dist"
-    ],
+    "create_dirs":  {
+        "type": "mkdir",
+        "0": [
+            "build",
+            "build/webserver",
+            "build/dashboard",
+    
+            "test",
+            "test/dashium",
+            "test/public",
+            "dist"
+        ]
+    },
+    "create_dirs2":  {
+        "type": "mkdir",
+        "0": [
+            "waw"
+        ]
+    },
     "download": {
         "type": "clone",
         "0": [
@@ -78,10 +87,11 @@
         ]
     },
     "order": {
-        "mkdir": "create_dir",
-        "function0": "download",
-        "function1": "cleaner",
-        "function2": "keep",
-        "function3": "mover"
+        "function0": "create_dirs",
+        "function1": "download",
+        "function2": "cleaner",
+        "function3": "keep",
+        "function4": "mover",
+        "function5": "create_dirs2"
     }
 }

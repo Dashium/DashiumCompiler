@@ -108,7 +108,7 @@ function filter(key, value){
             keep(value[0], config[value[1]]);
             break;
         case 'mkdir':
-            create_dirs(config[value]);
+            create_dirs(value);
             break;
         case 'move':
             move(value[0], value[1]);
