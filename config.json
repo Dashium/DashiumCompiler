@@ -1,4 +1,15 @@
 {
+    "cleaner": {
+        "type": "clean",
+        "0": [
+            "clean_files",
+            "build/webserver"
+        ],
+        "1": [
+            "clean_files",
+            "build/dashboard"
+        ]
+    },
     "clean_files": [
         ".git",
         ".gitignore",
@@ -11,23 +22,40 @@
         "build/dashboard",
 
         "test",
+        "test/dashium",
+        "test/public",
         "dist"
     ],
     "download": {
         "type": "clone",
         "0": [
-            "https://github.com/Dashium/DashiumWebServer",
-            "build/webserver"
+            "https://github.com/Dashium/Dashium",
+            "dist/"
         ],
         "1": [
             "https://github.com/Dashium/DashiumDashboard",
             "build/dashboard"
         ],
         "2": [
-            "https://github.com/Dashium/Dashium",
-            "dist"
+            "https://github.com/Dashium/DashiumWebServer",
+            "build/webserver"
         ]
     },
+    "keep": {
+        "type": "keep",
+        "0": [
+            "dist",
+            "keep_files"
+        ]
+    },
+    "keep_files": [
+        ".git",
+        ".gitignore",
+        "icon_by_silversouls.jpg",
+        "LICENSE",
+        "package.json",
+        "package-lock.json"
+    ],
     "mover": {
         "type": "move",
         "0": [
@@ -51,10 +79,8 @@
     "order": {
         "mkdir": "create_dir",
         "function0": "download",
-        "clean": [
-            "clean_files",
-            "build"
-        ],
-        "function1": "mover"
+        "function1": "cleaner",
+        "function2": "keep",
+        "function3": "mover"
     }
 }
