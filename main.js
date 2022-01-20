@@ -5,11 +5,7 @@ const rimraf = require('rimraf');
 
 var config = require('./config.json');
 
-function build(){
-    clean('build');
-}
-
-function clean(dir, cleanFiles){
+function clean(cleanFiles, dir){
     if(dir == null || cleanFiles == null){
         logger('err', `No argument found on clean function !`);
     }
@@ -76,7 +72,6 @@ function create_dir(dir){
 function create_dirs(dirs){
     for(i=0;i<dirs.length;i++){
         create_dir(dirs[i]);
-
         if(i == dirs.length - 1){
             return true;
         }
@@ -85,10 +80,8 @@ function create_dirs(dirs){
 
 async function exec(cmd){
     child_process.exec(cmd, (err, stdout) => {
-        if(err == null){
-            if(cmd.indexOf('clone')){
-                logger('info', `repo clonned`);
-            }
+        if(err){
+            logger('err', err);
         }
     });
     sleep(7000);
@@ -100,6 +93,9 @@ function filter(key, value){
         return false;
     }
     switch(key){
+        case 'clean':
+            clean(config[value[0]], value[1]);
+            break;
         case 'clone':
             clone(value[0], value[1]);
             break;
@@ -107,6 +103,9 @@ function filter(key, value){
             for(fi=0;fi < Object.keys(config[value]).length; fi++){
                 filter(config[value].type, config[value][fi]);
             }
+            break;
+        case 'keep':
+            keep(value[0], config[value[1]]);
             break;
         case 'mkdir':
             create_dirs(config[value]);
@@ -117,6 +116,18 @@ function filter(key, value){
         default:
             logger('err', `Not found key: ${key}`);
     }
+}
+
+function getFiles(dir, files_){
+    files_ = files_ || [];
+    var files = fs.readdirSync(dir);
+    for (var i in files){
+        var name = dir + '/' + files[i];
+        if (fs.statSync(name).isDirectory()){
+            getFiles(name, files_);
+        }
+    }
+    return files_;
 }
 
 function init(){
@@ -133,6 +144,22 @@ function init(){
         filter(key, value);
 
         ini++;
+    }
+}
+
+function keep(dir, keep_files){
+    let files = getFiles(dir, keep_files);
+
+    for(k=0;k<files.length;k++){
+        console.log(files[k]);
+
+        for(j=0;j<keep_files.length;j++){
+            console.log(files[k]);
+            if(files[k].indexOf(keep_files[j]) == -1){
+                // remove(files[k]);
+                console.log(files[k]);
+            }
+        }
     }
 }
 
@@ -155,6 +182,7 @@ function move(target, dest){
 
 function remove(target){
     rimraf.sync(target);
+    logger('info', `Remove ${target} dir`);
 }
 
 const reset = new Promise(function(resolve, reject){
@@ -162,7 +190,6 @@ const reset = new Promise(function(resolve, reject){
         remove('build');
         remove('dist');
         remove('test');
-
         setTimeout(() => {
             resolve('reset');
         }, 1000);
