@@ -1,0 +1,18 @@
+on:
+  schedule:
+    - cron: 0 12 * * *
+name: Build Dashium
+jobs:
+  render:
+    name: Build Dashium
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@main
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+      - run: sudo apt update
+      - run: npm install
+      - run: npm run build
+        env:
+          WORKFLOW_INPUT: ${{ toJson(github.event.inputs) }}
