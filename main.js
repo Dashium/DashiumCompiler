@@ -121,16 +121,15 @@ function filter(key, value){
     }
 }
 
-function getFiles(dir, callback, files_){
+function getFiles(dir, files_){
     files_ = files_ || [];
     var files = fs.readdirSync(dir);
-    for (var i in files){
+    for(var i in files){
         var name = dir + '/' + files[i];
-        if (fs.statSync(name).isDirectory()){
-            getFiles(name, callback, files_);
+        if(fs.statSync(name).isDirectory()){
+            getFiles(name, files_);
         }
     }
-    callback(files_);
     return files_;
 }
 
@@ -151,30 +150,27 @@ function init(){
     }
 }
 
-    if(files == null || files == []){
-        files = getFiles(dir);
-        keep(dir, keep_files, files);
-    }
-
-function keep(dir, keep_files){
-    console.log(files, dir, keep_files);
-    for(j=0;j<files.length;j++){
-        // for(k=0;k<files.length;k++){
-        //     if(`${dir}/${files[k]}` != `${dir}/${keep_files[j]}`){
-        //         // remove(`${dir}/${files[k]}`);
-        //         console.log(`${dir}/${files[k]}`);
-        //     }
-        // }
-
-        if(keep_files.indexOf(`${dir}/${files[j]}`) != -1){
-            files.splice(`${dir}/${files[j]}`, 1);
-            console.log(files, keep_files);
+function keep(dir, keep_files, files_){
+    if(fs.existsSync(dir) == true){
+        files_ = files_ || [];
+        var files = fs.readdirSync(dir);
+        for(var i in files){
+            var name = dir + '/' + files[i];
+            if(fs.statSync(name).isDirectory()){
+                for(k=0;k<keep_files.length;k++){
+                    console.log(name, `${dir}/${keep_files[k]}`);
+                    if(name != `${dir}/${keep_files[k]}`){
+                        remove(name);
+                        break;
+                    }
+                    else{
+                        keep(name, keep_files, files_);
+                    }
+                }
+            }
         }
+        return files_;
     }
-}
-
-function keep_check(dir){
-    console.log(dir);
 }
 
 function logger(lvl, content){
