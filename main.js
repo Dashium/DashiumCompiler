@@ -105,8 +105,7 @@ function filter(key, value){
             }
             break;
         case 'keep':
-            sleep(5000);
-            keep(value[0], config[value[1]], getFiles(value[0]));
+            keep(value[0], config[value[1]]);
             break;
         case 'mkdir':
             create_dirs(config[value]);
@@ -122,15 +121,16 @@ function filter(key, value){
     }
 }
 
-function getFiles(dir, files_){
+function getFiles(dir, callback, files_){
     files_ = files_ || [];
     var files = fs.readdirSync(dir);
     for (var i in files){
         var name = dir + '/' + files[i];
         if (fs.statSync(name).isDirectory()){
-            getFiles(name, files_);
+            getFiles(name, callback, files_);
         }
     }
+    callback(files_);
     return files_;
 }
 
@@ -151,12 +151,12 @@ function init(){
     }
 }
 
-function keep(dir, keep_files, files){
     if(files == null || files == []){
         files = getFiles(dir);
         keep(dir, keep_files, files);
     }
 
+function keep(dir, keep_files){
     console.log(files, dir, keep_files);
     for(j=0;j<files.length;j++){
         // for(k=0;k<files.length;k++){
@@ -171,6 +171,10 @@ function keep(dir, keep_files, files){
             console.log(files, keep_files);
         }
     }
+}
+
+function keep_check(dir){
+    console.log(dir);
 }
 
 function logger(lvl, content){
