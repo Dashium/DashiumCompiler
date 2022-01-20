@@ -155,9 +155,8 @@ function keep(dir, keep_files){
 
         for(j=0;j<keep_files.length;j++){
             console.log(files[k]);
-            if(files[k].indexOf(keep_files[j]) == -1){
-                // remove(files[k]);
-                console.log(files[k]);
+            if(files[k].indexOf(keep_files[j]) != -1){
+                remove(`${dir}/${files[k]}`);
             }
         }
     }
