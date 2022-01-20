@@ -105,13 +105,17 @@ function filter(key, value){
             }
             break;
         case 'keep':
-            keep(value[0], config[value[1]]);
+            sleep(5000);
+            keep(value[0], config[value[1]], getFiles(value[0]));
             break;
         case 'mkdir':
             create_dirs(config[value]);
             break;
         case 'move':
             move(value[0], value[1]);
+            break;
+        case 'wait':
+            sleep(value);
             break;
         default:
             logger('err', `Not found key: ${key}`);
@@ -147,17 +151,24 @@ function init(){
     }
 }
 
-function keep(dir, keep_files){
-    let files = getFiles(dir, keep_files);
+function keep(dir, keep_files, files){
+    if(files == null || files == []){
+        files = getFiles(dir);
+        keep(dir, keep_files, files);
+    }
 
-    for(k=0;k<files.length;k++){
-        console.log(files[k]);
+    console.log(files, dir, keep_files);
+    for(j=0;j<files.length;j++){
+        // for(k=0;k<files.length;k++){
+        //     if(`${dir}/${files[k]}` != `${dir}/${keep_files[j]}`){
+        //         // remove(`${dir}/${files[k]}`);
+        //         console.log(`${dir}/${files[k]}`);
+        //     }
+        // }
 
-        for(j=0;j<keep_files.length;j++){
-            console.log(files[k]);
-            if(files[k].indexOf(keep_files[j]) != -1){
-                remove(`${dir}/${files[k]}`);
-            }
+        if(keep_files.indexOf(`${dir}/${files[j]}`) != -1){
+            files.splice(`${dir}/${files[j]}`, 1);
+            console.log(files, keep_files);
         }
     }
 }

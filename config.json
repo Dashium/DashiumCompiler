@@ -44,7 +44,7 @@
     "keep": {
         "type": "keep",
         "0": [
-            "dist",
+            "dist/",
             "keep_files"
         ]
     },
@@ -53,6 +53,7 @@
         ".gitignore",
         "icon_by_silversouls.jpg",
         "LICENSE",
+        "modules",
         "package.json",
         "package-lock.json"
     ],
