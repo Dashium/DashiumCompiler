@@ -31,8 +31,8 @@ function clone(repo, dest){
 function copyFileSync(source, target, remover){
     var targetFile = target;
     if(remover != null){
-        targetFile = targetFile.replace(`${remover}/`, '');
-        targetFile = targetFile.replace(`${remover}\\`, '');
+        targetFile = targetFile.replace(`/${remover}`, '');
+        targetFile = targetFile.replace(`\\${remover}`, '');
     }
     console.log(targetFile, remover);
     if(fs.existsSync(target)){
@@ -48,8 +48,8 @@ function copyFolderRecursiveSync(source, target, remover){
     var files = [];
     var targetFolder = path.join(target, path.basename(source));
     if(remover != null){
-        targetFolder = targetFolder.replace(`${remover}/`, '');
-        targetFolder = targetFolder.replace(`${remover}\\`, '');
+        targetFolder = targetFolder.replace(`/${remover}`, '');
+        targetFolder = targetFolder.replace(`\\${remover}`, '');
     }
     if(!fs.existsSync(targetFolder)) {
         fs.mkdirSync(targetFolder);
