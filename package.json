@@ -5,8 +5,7 @@
   "main": "main.js",
   "scripts": {
     "test": "node main.js",
-    "build": "node main.js",
-    "release": "release.sh"
+    "build": "node main.js"
   },
   "repository": {
     "type": "git",

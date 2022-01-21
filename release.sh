@@ -8,7 +8,7 @@ set -o nounset    # fail on unset variables
 git clone "https://DashiumBot:$1@github.com/Dashium/Dashium" release
 cd release
 
-rm -rf !(".git")
+rm -rf *
 cd ..
 
 cp -r ./dist/* ./release/
