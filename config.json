@@ -8,6 +8,10 @@
         "1": [
             "clean_files",
             "build/dashboard"
+        ],
+        "2": [
+            "clean_files",
+            "build/cron"
         ]
     },
     "clean_files": [
@@ -22,6 +26,7 @@
             "build",
             "build/webserver",
             "build/dashboard",
+            "build/cron",
             
             "dist"
         ]
@@ -29,7 +34,8 @@
     "create_dirs2":  {
         "type": "mkdir",
         "0": [
-            "dist/www"
+            "dist/www",
+            "dist/modules"
         ]
     },
     "download": {
@@ -45,6 +51,10 @@
         "2": [
             "https://github.com/Dashium/DashiumWebServer",
             "build/webserver"
+        ],
+        "3": [
+            "https://github.com/Dashium/DashiumCron",
+            "build/cron"
         ]
     },
     "keep": {
@@ -72,6 +82,10 @@
         "1": [
             "build/dashboard",
             "dist/www"
+        ],
+        "2": [
+            "build/cron",
+            "dist/modules/cron"
         ]
     },
     "order": {
