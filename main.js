@@ -28,8 +28,13 @@ function clone(repo, dest){
     }
 }
 
-function copyFileSync(source, target){
+function copyFileSync(source, target, remover){
     var targetFile = target;
+    if(remover != null){
+        targetFile = targetFile.replace(`${remover}/`, '');
+        targetFile = targetFile.replace(`${remover}\\`, '');
+    }
+    console.log(targetFile, remover);
     if(fs.existsSync(target)){
         if(fs.lstatSync(target).isDirectory()){
             targetFile = path.join(target, path.basename(source));
@@ -39,9 +44,13 @@ function copyFileSync(source, target){
     logger('info', targetFile);
 }
 
-function copyFolderRecursiveSync(source, target){
+function copyFolderRecursiveSync(source, target, remover){
     var files = [];
     var targetFolder = path.join(target, path.basename(source));
+    if(remover != null){
+        targetFolder = targetFolder.replace(`${remover}/`, '');
+        targetFolder = targetFolder.replace(`${remover}\\`, '');
+    }
     if(!fs.existsSync(targetFolder)) {
         fs.mkdirSync(targetFolder);
     }
@@ -50,10 +59,10 @@ function copyFolderRecursiveSync(source, target){
         files.forEach(function(file){
             var curSource = path.join(source, file);
             if(fs.lstatSync(curSource).isDirectory()){
-                copyFolderRecursiveSync(curSource, targetFolder);
+                copyFolderRecursiveSync(curSource, targetFolder, remover);
             }
             else{
-                copyFileSync(curSource, targetFolder);
+                copyFileSync(curSource, targetFolder, remover);
             }
         });
     }
@@ -187,7 +196,10 @@ function logger(lvl, content){
 }
 
 function move(target, dest){
-    copyFolderRecursiveSync(target, dest);
+    var prefix = target.split('/');
+        prefix = prefix[1];
+
+    copyFolderRecursiveSync(target, dest, prefix);
 }
 
 function remove(target){
@@ -202,10 +214,10 @@ const reset = new Promise(function(resolve, reject){
         remove('dist');
         remove('test');
         setTimeout(() => {
-            resolve('done');
+            resolve('LOG: done');
         }, 1000);
     } catch (error) {
-        reject('error');
+        reject(`ERROR: ${error}`);
     }
 });
 

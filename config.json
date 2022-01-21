@@ -22,10 +22,7 @@
             "build",
             "build/webserver",
             "build/dashboard",
-    
-            "test",
-            "test/dashium",
-            "test/public",
+            
             "dist"
         ]
     },
@@ -75,15 +72,6 @@
         "1": [
             "build/dashboard",
             "dist/public"
-        ],
-
-        "2": [
-            "build/webserver",
-            "test/"
-        ],
-        "3": [
-            "build/dashboard",
-            "test/public"
         ]
     },
     "order": {
