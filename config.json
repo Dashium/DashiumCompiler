@@ -29,7 +29,7 @@
     "create_dirs2":  {
         "type": "mkdir",
         "0": [
-            "dist/public"
+            "dist/www"
         ]
     },
     "download": {
@@ -71,7 +71,7 @@
         ],
         "1": [
             "build/dashboard",
-            "dist/public"
+            "dist/www"
         ]
     },
     "order": {
