@@ -12,5 +12,9 @@ jobs:
       - run: sudo apt update
       - run: npm install
       - run: npm run build
+      - name: Chmod
+        run: chmod +x ./release.sh
+      - name: Update data and release
+        run: npm run release
         env:
-          WORKFLOW_INPUT: ${{ toJson(github.event.inputs) }}
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}

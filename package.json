@@ -5,7 +5,8 @@
   "main": "main.js",
   "scripts": {
     "test": "node main.js",
-    "build": "node main.js"
+    "build": "node main.js",
+    "release": "release.sh"
   },
   "repository": {
     "type": "git",
@@ -23,6 +24,7 @@
   "homepage": "https://github.com/Dashium/DashiumCompiler#readme",
   "dependencies": {
     "child_process": "^1.0.2",
+    "dotenv": "^14.2.0",
     "path": "^0.12.7",
     "rimraf": "^3.0.2"
   }

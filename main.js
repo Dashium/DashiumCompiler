@@ -1,4 +1,5 @@
 const child_process = require('child_process');
+const dotenv = require('dotenv').config();
 const fs = require('fs');
 const path = require('path');
 const rimraf = require('rimraf');
@@ -34,7 +35,6 @@ function copyFileSync(source, target, remover){
         targetFile = targetFile.replace(`/${remover}`, '');
         targetFile = targetFile.replace(`\\${remover}`, '');
     }
-    console.log(targetFile, remover);
     if(fs.existsSync(target)){
         if(fs.lstatSync(target).isDirectory()){
             targetFile = path.join(target, path.basename(source));
@@ -109,6 +109,9 @@ function filter(key, value){
         case 'clone':
             clone(value[0], value[1]);
             break;
+        case 'exec':
+            exec(value[0]);
+            break;
         case 'function':
             for(fi=0;fi < Object.keys(config[value]).length; fi++){
                 filter(config[value].type, config[value][fi]);
@@ -122,6 +125,10 @@ function filter(key, value){
             break;
         case 'move':
             move(value[0], value[1]);
+            break;
+        case 'release':
+            var GHTOKEN = process.env.GH_TOKEN;
+            exec(`bash ${__dirname.replace(/\\/g, '/')}/release.sh ${GHTOKEN}`);
             break;
         case 'wait':
             sleep(value);
@@ -212,7 +219,7 @@ const reset = new Promise(function(resolve, reject){
         logger('info', 'RESET ALL');
         remove('build');
         remove('dist');
-        remove('test');
+        remove('release');
         setTimeout(() => {
             resolve('LOG: done');
         }, 1000);

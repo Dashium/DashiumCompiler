@@ -80,6 +80,7 @@
         "function2": "cleaner",
         "function3": "keep",
         "function4": "create_dirs2",
-        "function5": "mover"
+        "function5": "mover",
+        "release": "please release ;)"
     }
 }
