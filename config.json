@@ -32,7 +32,7 @@
     "create_dirs2":  {
         "type": "mkdir",
         "0": [
-            "waw"
+            "dist/public"
         ]
     },
     "download": {
@@ -91,7 +91,7 @@
         "function1": "download",
         "function2": "cleaner",
         "function3": "keep",
-        "function4": "mover",
-        "function5": "create_dirs2"
+        "function4": "create_dirs2",
+        "function5": "mover"
     }
 }

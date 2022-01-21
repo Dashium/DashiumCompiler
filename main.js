@@ -22,6 +22,7 @@ function clone(repo, dest){
     }
     try {
         exec(`git clone ${repo} ${dest}`);
+        logger('info', `${repo} done`);
     } catch (error) {
         logger('err', `Fail to clone '${repo}' repo`);
     }
@@ -134,14 +135,14 @@ function getFiles(dir, files_){
 }
 
 function init(){
+    logger('info', 'STARTING !');
     for(ini=0;ini<Object.keys(config.order).length;){
         let key = Object.keys(config.order)[ini];
         let value = config.order[key];
 
-        console.log(key, value);
-
         if(key.indexOf('function') == 0){
             key = "function";
+            logger('info', `FUNCTION ${value} ===============================`);
         }
         
         filter(key, value);
@@ -158,7 +159,6 @@ function keep(dir, keep_files, files_){
             var name = dir + '/' + files[i];
             if(fs.statSync(name).isDirectory()){
                 for(k=0;k<keep_files.length;k++){
-                    console.log(name, `${dir}/${keep_files[k]}`);
                     if(name != `${dir}/${keep_files[k]}`){
                         remove(name);
                         break;
@@ -197,14 +197,15 @@ function remove(target){
 
 const reset = new Promise(function(resolve, reject){
     try {
+        logger('info', 'RESET ALL');
         remove('build');
         remove('dist');
         remove('test');
         setTimeout(() => {
-            resolve('reset');
+            resolve('done');
         }, 1000);
     } catch (error) {
-        reject('No reset');
+        reject('error');
     }
 });
 
