@@ -4,6 +4,8 @@ const fs = require('fs');
 const path = require('path');
 const rimraf = require('rimraf');
 
+var mode = process.argv[2];
+
 var config = require('./config.json');
 
 function clean(cleanFiles, dir){
@@ -127,8 +129,10 @@ function filter(key, value){
             move(value[0], value[1]);
             break;
         case 'release':
-            var GHTOKEN = process.env.GH_TOKEN;
-            exec(`bash ${__dirname.replace(/\\/g, '/')}/release.sh ${GHTOKEN}`);
+            if(mode != 'test'){
+                var GHTOKEN = process.env.GH_TOKEN;
+                exec(`bash ${__dirname.replace(/\\/g, '/')}/release.sh ${GHTOKEN}`);
+            }
             break;
         case 'wait':
             sleep(value);
