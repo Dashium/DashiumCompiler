@@ -4,6 +4,7 @@
   "description": "Compilateur pour Dashium",
   "main": "main.js",
   "scripts": {
+    "clean": "node main.js clean",
     "test": "node main.js test",
     "build": "node main.js"
   },

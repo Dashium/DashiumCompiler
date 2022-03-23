@@ -88,6 +88,21 @@
             "dist/modules/cron"
         ]
     },
+    "moverModulesJSON": {
+        "type": "moveFile",
+        "0": [
+            "dist/www/dashium_module.json",
+            "dist/modules/dashboard_module.json"
+        ],
+        "1": [
+            "dist/dashium_module.json",
+            "dist/modules/webserver_module.json"
+        ],
+        "2": [
+            "dist/modules/cron/dashium_module.json",
+            "dist/modules/cron_module.json"
+        ]
+    },
     "order": {
         "function0": "create_dirs",
         "function1": "download",
@@ -95,6 +110,7 @@
         "function3": "keep",
         "function4": "create_dirs2",
         "function5": "mover",
+        "function6": "moverModulesJSON",
         "release": "please release ;)"
     }
 }

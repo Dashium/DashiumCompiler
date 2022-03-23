@@ -128,6 +128,9 @@ function filter(key, value){
         case 'move':
             move(value[0], value[1]);
             break;
+        case 'moveFile':
+            moveFile(value[0], value[1]);
+            break;
         case 'release':
             if(mode != 'test'){
                 var GHTOKEN = process.env.GH_TOKEN;
@@ -196,13 +199,13 @@ function keep(dir, keep_files, files_){
 function logger(lvl, content){
     switch(lvl){
         case 'err':
-            console.log(`ERROR: ${content}`);
+            console.log(`\x1b[31m ERROR: ${content} \x1b[0m`);
             break;
         case 'info':
-            console.log(`LOG: ${content}`);
+            console.log(`\x1b[32m LOG: ${content} \x1b[0m`);
             break;
         default:
-            console.log(`LOG: ${content}`);
+            console.log(`\x1b[34m LOG: ${content} \x1b[0m`);
     }
 }
 
@@ -213,6 +216,17 @@ function move(target, dest){
     copyFolderRecursiveSync(target, dest, prefix);
 }
 
+function moveFile(target, dest){
+    fs.rename(target, dest, (err) => {
+        if(err){
+            logger('err', `RENAME: ${target} -> ${dest}    ERROR !`);
+        }
+        else{
+            logger('info', `RENAME: ${target} -> ${dest}    DONE !`);
+        }
+    });
+}
+
 function remove(target){
     rimraf.sync(target);
     logger('info', `Remove ${target} dir`);
@@ -220,21 +234,24 @@ function remove(target){
 
 const reset = new Promise(function(resolve, reject){
     try {
-        logger('info', 'RESET ALL');
+        logger('infoB', 'RESET ALL');
         remove('build');
         remove('dist');
         remove('release');
         setTimeout(() => {
-            resolve('LOG: done');
+            logger('infoB', 'DONE');
+            resolve();
         }, 1000);
     } catch (error) {
-        reject(`ERROR: ${error}`);
+        logger('err', error);
+        resolve();
     }
 });
 
 reset.then(function(value){
-    console.log(value);
-    init();
+    if(mode != 'clean'){
+        init();
+    }
 });
 
 function sleep(milliseconds) {
